@@ -1,0 +1,7 @@
+---
+title: "Supervised Pretraining Can Learn In-Context Reinforcement Learning"
+author: "Priya Shanmugasundaram"
+date: "2023-12-18"
+categories: [ai research, code]
+---
+

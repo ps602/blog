@@ -1,0 +1,90 @@
+---
+title: "Large Language Models are Semi-Parameteric RL Agents"
+author: "Priya Shanmugasundaram"
+date: "2023-12-12"
+categories: [ai research, code]
+---
+
+Hello Everyone! Welcome to my blog, today we'll be going through the NeurIPS 2023 paper, "Large Langauge Models are Semi-Parametric RL Agents". 
+
+Key Points in Abstract:
+
++ evolvable LLM-based agent called REMEMBERER is proposed, possesses long-term experience memory that can be exploited across different task goals.
+
++ proposed approach apparently outperforms LLM agents with fixed examples and transient amount of memory.
+
++ authors introduce RLEM (RL with Experience Memory) - to update the memory
+
++ the method learns from experiences of both success and failure and evolves its capability by avoiding finetuning as memory is used to learn
+
++ show that its superior on two RL taks compared to SOTA
+
+Key Takeways from Intro:
+
++ based on psychology theory that states that humans use episodic memory of experiences from past episodes to make decisions, by repeating actions that caused success and avoiding actions that resulted in failure, extend this framework to seq decision making in LLMs.
+
++ Existing work - 1) finetuning the parameters using RL - quite costly and computationally expensive 2) Algorithm distillation - in-context RL by embedding the RL training traj into the input prompt of a pre-trained decision transformer. - cannot embed whole experience due to input length
+
+Thus RLEM - updates the experience memory rather than modifiying the model parameters - updates experience memory through analogical RL training so it can self-evolve
+
+REFLEXION - LLM with short-term working memory - authors introduce long-term experience memory as short term working memory is tied to a specific task goal and the stored memory cannot be used for different goals.
+
+Inner Monologue, Corrective Re-prompting, DEPS - take advantage of immediate failure feedback only once? 
+
+RLEM + LLM = REMEMBERER - utilize the experiences selectively based on the current state to optimize the decision
+
+semi-parametric RL agent - evolve its ability through interaction experiences however without finetuning parameters
+
+Experimental setup
+
++ RL Task sets with promising performance on LLM agents - web shop and wikihow
+
++ trained on a dew tasks and tested on some other tasks to check the inter-useability of task data and experiences.
+
+RLEM Pipeline:
+
++ LLM agent observes $o_t$ at time $t$ from the environment and then $o_t$ is used to retrieve several related experiences from the RLEM module according to some similarity functions, which are represented as $O_x$, $a_x$ and corresponding state-action value estimates $Q_x$, where $x$ is the subset of retrieved experiences.
+
++ based on that and the $r_{t-1}$ LLM selects $a_t$ which will be executed in the environment and the resulted reward $r_t$ received as feedback.
+
++ the tuple containing the experiences ($o_t$, $a_t$, $r_t$, $o_{t+1}$) are stored into the experience memory 
+
++ the experiences are assumed to be a group of external parameters of the LLM based agents
+
++ off policy learning - task info g, and tuple from last step - to estimate the Q value using bellman optimality equation where unrecorded actions for the task are assigned a Q value of 0 using Q Learning 
+
++ adapting the training memory for dynamic exemplars for few shot in-context Learning, where the exemplars are chosen based on similarity where two kinds of similarity are considered, task similarity and observation similarity between two observations $o_t$ and $o_i$
+
+$$
+s_i = \lambda f_g(g, g_i) + (1 - \lambda)f_o(o_t, o_i)
+$$
+
+where $m$ records with the highest similarity are retrieved for the exemplars. For the input part they show task information, past observations, past actions, and interaction feedback and in the output where encouraged and discouraged actions are shown based on the q values.
+
+Details on Experiments:
+
+Webshop and WikiHow are conducted on the models OpenAI API of GPT3.5Turbo and text-davinci-003
+
+Webshop - instructed to browse the site and shop for target goods. score between 0 and 1 will be rated after shopping by assessing the correspondence between product and instruction. 
+
+webpage representation and a list of available actions  --- > LLM  --->  products to shop for
+
+no immediate rewards only the last 5 actions serve as procedure feedback
+
+inspired by cot and react - LLM is prompted to predict a reason for its decision -- observation similarity based on web page representation into four patterns 
+
+task similiarity sentence similarity transformer $f_g$
+
+WikiHow - follow the instructions and navigate to the required page
+
+intermediate rewards are available, the screen is represented in an HTML element sequence, last 4 performed actions and the last reward are given as feedback
+
+task representation, screen representation and step instruction --> LLMs --> print the HTML representation of the operated element 
+
+$f_g$ task similarity is computed from step instructions and $f_o$ is computed based on the length of the longest common sequence of HTML elements in the screen representation
+
+They present ablation analysis of full model with variants like w/o bootstrap, w/o random and w/o discouraged actions and so on and look at avg reward and avg success rates for the two task sets
+
+They compare performance with LLM only method, ReAct and REMEMBERER for different training sets and different initial exemplar sets and see consistent improvements across different settings
+
+

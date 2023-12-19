@@ -1,0 +1,47 @@
+---
+title: "Large Language Models as Optimizers"
+author: "Priya Shanmugasundaram"
+date: "2023-12-14"
+categories: [ai research, code]
+---
+
+Hello everyone! Welcome to my blog, today we will be going through the paper "Large Language Models as Optimizers" from Google Deepmind.
+
+Key Points in the Abstract:
+
++ optimization task is described in natural language and they leverage LLMs as optimizers.
+
++ they propose an Optimization by Prompting technique where at each step, the LLM generates new solutions from the prompt that contains prev generated solutions with their values, new solutions are evaluated and add to the prompt for the next step
+
++ show OPRO on LR and Traveling Salesman problem and also do prompt optimization where they want to find prompt that maximizes task accuracy
+
++ obtain optimized prompts that improve accuracy by 8%, 50% on GSM8K and Big-bench Hard tasks compared to human prompts
+
+Key Points in the Introduction:
+
++ instead of formally defining the optimization problem and deriving the update update step with a solver, the method uses LLMs where the optimization problem is described in natural language and the solution obtained in the previous step is provided along with the prompt to the next step
+
++ Prompt Optimization: want to optimize the prompt to maximize training accuracy, as the prompt can impact the performance of the model significantly. They assume that they have a training set available to compute the training accuracy as the objective balie for optimization
+
++ meta-prompt - 1) previously generated prompts with the corresponding accuracy 2) optimization problem description where several exempars are randomly selected from the training set
+
++ starting with prompts that have low accuracies, the LLM serves as an optimizer in generating prompts that increase the accuracy
+
+OPRO - LLM as the Optimizer
+
++ With every step, the LLM generates candidate solutions to the optimzation task by looking at the optimization problem description and previously evaluated solutions in the meta-Prompt
+
++ the new solutions are evaluated and added to the prompt for next steps, process terminate when max_steps are reached or optimization scores are constant
+
++ the LLM that evaluates the objective function is called the scorer LLM and the LLM for optimization as the optimizer LLMs
+
++ Meta-Prompt Design - 1) Optimization Problem Description: text description of the optimization problem including the objective function and the solution constraints; 2) Optimization Trajectory: instructing the LLM to leveraging the optimization trajectory for generating new solutions - where trajectory has past solutions with optimization score in ascending order
+
++ They consider two optimization problems as example, 1) Linear Regression and 2) TSP for continuous and discrete problems respectively. They explore different (w,b) pairs compared to the w_true and b_true and evaluate the performance of their method in identifying close (w,b) pairs for different models and the number of steps to convergence as well.
+
++ They evaluate similarly for TSP setting as well, where they compare their method to existing heuristics like Nearest Neighbor and Farthest Insertion. 
+
++ For their prompt optimization module, they evaluate performance of their prompts on GSM8K and BB-Hard tasks for different settings, A_begin, A_end, Q_begin and Q_end which denote the location where the prompt is inserted across different models. 
+
++ They also perform ablation studies analyze the meta-prompt design wrt transferability, semantic similarity, number of few-shots, initial instruction, order of the prompts etc.
+

@@ -1,0 +1,19 @@
+---
+title: "Priya Shanmugasundaram"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/PriyaS_ML
+    - icon: linkedin
+      text: LinkedIn
+      href: https://linkedin.com/in/priyashanm
+    - icon: github
+      text: Github
+      href: https://github.com/ps602
+
+---
+
+Helloo! I am Priya, an MS student in Computer Engineering at Virginia Tech, advised by Prof. Ming Jin. My research interests include Reinforcement Learning, Large Language Models, Optimization and AI safety. I am currently a Graduate Research Assistant in the ROLE Lab at Virginia Tech, where I work on inducing moral reasoning in AI agents to enable alignment and safety. 
